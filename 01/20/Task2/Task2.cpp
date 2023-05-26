@@ -27,7 +27,7 @@ std::variant<int, std::string, std::vector<int>> get_variant() {
 void Pr_var(std::variant<int, std::string, std::vector<int >> m)
 {
 	if (std::holds_alternative<int>(m))
-		std::cout << std::get<int>(m);
+		std::cout << std::get<int>(m)*2;
 	else if (std::holds_alternative<std::string>(m))
 		std::cout << std::get<std::string>(m);
 	else

@@ -5,7 +5,7 @@
 using namespace std;
 
 int main()
-{//С нечётными номерами умножаются на 3
+{//С нечётными значениями умножаются на 3
     vector <int> arr{ 2,3,7,9,11 };
     vector <int>::iterator n;
 

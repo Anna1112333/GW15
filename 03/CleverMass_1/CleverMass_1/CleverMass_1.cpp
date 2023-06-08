@@ -4,6 +4,8 @@ class smart_array{
 	int arr_size, ite_arr=0;
 	int* arr0;
 	public:
+		smart_array(const smart_array&) = delete; //Запркщаем конструктор копирования
+		smart_array& operator=(const smart_array&) = delete; // Запрещаем оператор копирования
 		smart_array(int arr_size)
 		{
 			arr0 = new int[arr_size];
@@ -28,7 +30,8 @@ int main()
 {
    
 	try {
-		smart_array arr(5);
+		
+		smart_array arr(5);	
 		arr.add_element(1);
 		arr.add_element(4);
 		arr.add_element(155);

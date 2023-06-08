@@ -1,21 +1,31 @@
 ﻿#include <iostream>
+#include <algorithm>
 
 class smart_array {
-	int arr_size, copasity_objects=0;
+	int arr_size{ 0 }, copasity_objects = 0;
 	int* arr0;
 	
 public:
 	smart_array(int arr_size)
-	{
-		
+	{		
 		arr0 = new int[arr_size];
 		this->arr_size = arr_size;			
 	}
 	smart_array(const  smart_array &g):copasity_objects(0)
-	{
-		arr0= new int[arr_size];
-		this->arr_size = arr_size;		
+	{		
+			if (&g == this) delete[] g.arr0;
+			else {
+				this->arr_size = g.arr_size;
+				this->arr0 = new int[arr_size];
+			}			
 	}
+
+	smart_array operator = (smart_array& g1) {
+		for (int i = 0; i < g1.arr_size; i++)
+			this->arr0[i] = g1.arr0[i];
+		return *this;
+	}
+
 	~smart_array()
 	{
 		delete[] arr0;
@@ -50,7 +60,8 @@ int main()
 	smart_array new_array(2);
 	new_array.add_element(44);
 	new_array.add_element(34);
-	std::cout << new_array.get_element(0);
-	//arr = new_array;
-
+	std::cout << new_array.get_element(0)<<std::endl;
+	
+	arr = new_array;
+	std::cout << arr.get_element(0) << std::endl;
 }

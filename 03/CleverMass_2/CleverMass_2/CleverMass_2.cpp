@@ -2,27 +2,37 @@
 #include <algorithm>
 
 class smart_array {
+public:
 	int arr_size{ 0 }, copasity_objects = 0;
 	int* arr0;
 	
-public:
+
 	smart_array(int arr_size)
 	{		
 		arr0 = new int[arr_size];
 		this->arr_size = arr_size;			
 	}
-	smart_array(const  smart_array &g):copasity_objects(0)
-	{		
-			if (&g == this) delete[] g.arr0;
-			else {
+	smart_array(const  smart_array &g)
+	{					
 				this->arr_size = g.arr_size;
-				this->arr0 = new int[arr_size];
-			}			
+				this->copasity_objects = g.copasity_objects;
+				this->arr0 = new int[g.arr_size];
+				for (int i = 0; i < g.arr_size; i++)
+					this->arr0[i] = g.arr0[i];					
 	}
 
-	smart_array operator = (smart_array& g1) {
-		for (int i = 0; i < g1.arr_size; i++)
-			this->arr0[i] = g1.arr0[i];
+	smart_array& operator = (const smart_array& g1) {
+		if (this != &g1) {
+			if (this->arr_size == g1.arr_size)
+				for (int i = 0; i < g1.arr_size; i++)
+					this->arr0[i] = g1.arr0[i];
+			else {
+				delete[] this->arr0;
+				this->arr0 = new int[g1.arr_size];
+				for (int i = 0; i < g1.arr_size; i++)
+					this->arr0[i] = g1.arr0[i];
+			}
+		}
 		return *this;
 	}
 

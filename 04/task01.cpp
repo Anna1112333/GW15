@@ -1,5 +1,7 @@
-#include <""C:\Dock\Cath2\Catch2\build\generated-includes\catch2\catch_user_config.hpp"">
+#include "catch2/catch_test_macros.hpp"   //Catch2 установлен
 
+#include "catch2/catch_session.hpp"
+#include "catch2/catch_all.hpp"
 
 #include <iostream>
 

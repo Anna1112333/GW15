@@ -1,8 +1,7 @@
-#include "catch2/catch_test_macros.hpp"   //Catch2 установлен
-
-#include "catch2/catch_session.hpp"
-#include "catch2/catch_all.hpp"
-
+#include <catch2/catch_test_macros.hpp>   //Catch2 установлен
+#include <catch2/catch_session.hpp>
+#include <catch2/catch_all.hpp>
+//#include "tests.cpp"
 #include <iostream>
 
 struct ListNode
@@ -14,7 +13,6 @@ public:
         if (prev != nullptr) prev->next = this;
         if (next != nullptr) next->prev = this;
     }
-
 public:
     int value;
     ListNode* prev;

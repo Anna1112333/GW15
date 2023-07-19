@@ -14,10 +14,8 @@ void sqw(std::vector<int>& arr)
     std::vector<int>::iterator n;
     int  k = distance(arr.begin(), arr.end());
      n = arr.begin();  
-    int ct = 0; // Обращаемся к счётчику ct, t - значение элемента вектора
-    std::transform(n, (n + k), n, [&ct](int t)mutable {
-         t = t * t;
-        ct++;
+    std::transform(n, (n + k), n, [](int t)mutable {
+         t = t * t;        
         return t;
         }
     );  

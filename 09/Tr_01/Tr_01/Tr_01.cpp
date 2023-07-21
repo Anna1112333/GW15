@@ -6,9 +6,7 @@ using namespace std;
 template<typename T>
 void move_vectors(std::vector<T>& vk1, std::vector<T>& vk2)
 {
-    std::vector<T> a = std::move( vk1);
-    
-    vk2=std::move(a);
+    vk2=std::move(vk1);
 }
 
 int main()

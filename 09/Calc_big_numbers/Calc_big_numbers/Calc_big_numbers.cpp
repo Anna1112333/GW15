@@ -7,8 +7,7 @@
 class big_integer
 {
     std::deque<unsigned> sum(std::deque<unsigned> s, std::deque<unsigned> d){
-        this->n_2.clear();
-        this->num2.clear();
+        this->num1="";
         std::deque<unsigned> a;
         int less, max;
       
@@ -20,10 +19,10 @@ class big_integer
                 if (i < less) a.push_back(d[i]);
                 else a.push_back(d[i] + s[i - less]);
         }
-        bring_to_10(a);
+       a= bring_to_10(a);
         return a;
     }
-    std::deque<unsigned>bring_to_10(std::deque<unsigned>a){
+    std::deque <unsigned> bring_to_10 (std::deque<unsigned>a) {
         int max =a.size();
         for (int i = max - 1; i > 0; i--)
         {
@@ -33,14 +32,14 @@ class big_integer
             }
         }
         if (a[0] > 9) {int k= a[0] / 10;
-        a.push_front(k); a[0] %= 10;
+        a[0] %= 10;
+        a.push_front(k); 
         }
         return a;
     }
 
     std::deque<unsigned> multiply(unsigned s, std::deque<unsigned> d) {
-        this -> n_2.clear();
-        this->num2.clear();
+        this->num1="";
         std::deque<unsigned> m, n, n0;
         unsigned  wr=0;
         int length_d = d.size();
@@ -49,8 +48,7 @@ class big_integer
         {    wr =s % 10;       
             s =  s / 10;            
             m.push_front(wr);
-        }
-       
+        }       
         int length_s = m.size();
         for (int i = length_d-1; i >= 0; i--)
         {
@@ -89,40 +87,42 @@ class big_integer
          v.push_back('\0');
          return v;
     }
-
-    std::string num1="", num2="";
-    std::deque<unsigned> n_1{}, n_2{};
+    std::string num1="";
+   
 public:
-    big_integer &operator=(const big_integer & other){
-        if (num1 == other.num1) return *this;
-        else {
-            num1 = other.num1;
-            n_1 = other.n_1;
+    big_integer& operator=(big_integer&& other) noexcept
+    {
+        if (num1 == other.num1)
+        {
+          
+            return *this;
         }
+        else this->num1 = other.num1;
         return *this;
     }
-    std::string operator *(const unsigned m)
-    {
-        n_2 = multiply(m,this->n_1);       
-        this->num2.clear();
-        num2 = change1(this->n_2);     
-        return num2;
-
+   
+    big_integer operator *(const unsigned m)
+    {      
+       this->num1 =change1( multiply(m,change(num1)));  
+       big_integer p = std::move(*this);
+        return p;       
     }
-    std::string &operator +(const big_integer& other)
+    big_integer operator + (const big_integer& other) // бинарный плюс
     {
-        this->n_2=sum(this->n_1, other.n_1);
-        num2 = change1(n_2);
-        return num2;
+        std::deque<unsigned> d = change(this->num1);
+        std::deque<unsigned> s = change(other.num1);
+       num1 = change1(sum(d, s));
+       big_integer t(num1);
+       return t;
     }
-    big_integer(std::string num) :num1{ num }
-    {    
-        if(!num1.empty())
-        n_1=change(num1);        
-    }
-    big_integer(big_integer && other) //move конструктор
+    big_integer(std::string num)   {   this->num1 = num;   }
+    big_integer(big_integer && other) noexcept //move конструктор
     {
-         num1 = other.num1;              
+         num1 = std::move(other.num1);              
+    }
+    std::string toString() 
+    {
+        return this->num1;
     }
 };
 
@@ -132,11 +132,13 @@ int main()
     auto a = big_integer("123");
     auto number1 = big_integer("114575");
     auto number2 = big_integer("78524");
+    auto number3 = big_integer("51351");
     number1 = std::move(a);
-    auto result = number1 + number2; 
-    std::cout << "result= " << result << std::endl;
+
+   auto result = number1 + number2 + number3; 
+   std::cout << "result= " << result.toString()<< std::endl;
     unsigned g = 215;
-    auto g_mult = number1 * g;
-    std::cout <<"g_mult=" << g_mult<<std::endl;
+    auto g_mult = a * g;
+    std::cout <<"g_mult=" << g_mult.toString() <<std::endl;
     big_integer b( std::move(number1));
 }

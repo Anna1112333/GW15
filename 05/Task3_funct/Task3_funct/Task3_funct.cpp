@@ -4,38 +4,28 @@
 #include  <algorithm>
 
 class funkt {
-public:
-    funkt()  {}
-        std::vector<int> arr;      
-       
-        int  count=0, sum=0; // Обращаемся к счётчику ct, t - значение элемента вектора
+    int  count=0, sum=0; 
+public:        
         int get_sum() {
-            std::for_each(arr.begin(), arr.end(), [&](int t) {
-                if (t % 3 == 0)  sum += t;
-                return t;
-                });
-            return sum;
+           return sum;
         }
-            int get_count() {
-                std::for_each(arr.begin(), arr.end(), [&](int t) {
-                    if (t % 3 == 0)  count++;
-                    return t; });
-                return count;
+        int get_count() {
+            return count;
             }
 void operator ()(int a)
-    {        
-    arr.push_back(a);      
-    }
+    {     
+    if (a % 3 == 0)
+    {
+        sum = sum + a;
+        count = count + 1;
+    }}
 };
 
 int main()
 {    
     std::vector<int> arr{ 1, 6, 8, 15, 18, 4, 7, 6};
     std::cout << "[IN]: ";
-    for (int i : arr)
-    {
-        std::cout << i << " ";
-    }
+    for (int i : arr)    std::cout << i << " ";    
     std::cout << std::endl;
     funkt f;
     f = std::for_each(arr.begin(), arr.end(), f);   

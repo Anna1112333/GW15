@@ -1,7 +1,7 @@
 #include <catch2/catch_test_macros.hpp>   //Catch2 установлен
 #include <catch2/catch_session.hpp>
 #include <catch2/catch_all.hpp>
-//#include "tests.cpp"
+
 #include <iostream>
 
 struct ListNode

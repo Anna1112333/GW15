@@ -1,4 +1,4 @@
-﻿#define _USE_MATH_DEFINES
+﻿#define _USE_MATH_DEFINES       //распараллеоить программу сложения матриц на 1, 2, 4, 8, 16 потоков.
 #include <cmath>
 #include <thread>
 #include <chrono>
@@ -10,16 +10,19 @@
 #include <execution>
 #include <algorithm>
 
+using namespace std::literals::chrono_literals;
+
 struct for_thread
-{
+{  
+   
     int n = 10, m=100;
     std::vector<std::vector<int>> a;
     std::vector<std::vector<int>> b;
     std::vector<std::vector<int>> s;
-    for_thread(int k)       //- число элементов в массиве равно n*m*k
-    {
-        std::cout << "Конструктор\n";
-        m = m * k;
+    for_thread(int k)       //- число элементов в массиве равно n*(m*k)
+    {    
+        m = m *pow(10, k);
+        std::cout << m << " ";
         for (int i = 0; i < n; i++)
         {
             std::vector<int> va, vb, vs; //временный вектор в области видимости
@@ -34,73 +37,68 @@ struct for_thread
         }
     }
 
-    void summa(int x, int y) //x-число потоков y-номер первого складываемого вектора
+    void summa(int x, int y) //x-число потоков y-номер операции сложения от 1 до х
     {
-        int i = 0, j = 0, n1=n;
-        if (x != 1) {
-            n1 = (n / x + 1)*y; i = (n / x)*y;
-        }
-        if (x == y) n1 = n;
-      
+     
+       // auto h1 = std::chrono::steady_clock::now();      
+        int i = 0, j = 0, n1=n; //потоки складывают вектора с i по n1
+        if (x != 1 && x!=y) {
+            n1 = (n / x )*y; i = (n / x)*(y-1);
+        }     
         for (; i < n1; i++)
         {
           for (; j < m; j++)   s[i][j] = b[i][j] + a[i][j];
-        }
-       
+        }    
+       // auto h2 = std::chrono::steady_clock::now();
+       // std::chrono::duration<double, std::milli> some =h2 - h1 ;    
+      //std::cout << some.count()<<" ";        
      }
 };
 
 
  int main()
  {
+    
      setlocale(LC_ALL, "RUS");
-     std::cout << std::thread::hardware_concurrency() << std::endl;
-    // std::vector<std::thread> t; t.resize(16);
+     std::cout << std::thread::hardware_concurrency() << std::endl;   
      const int n = 10, m = 100;    
-     int x1=1, y1;  //x1 - количество потоков, y1 - номер выборки векторов в матрице 
-     for_thread a(1), b(2), c(3), d(4), e(5);
+     int x1=1, y1;  //x1 - количество потоков, y1 - номер выборки векторов в матрице 0-(х1-1)
+     for_thread a(1), b(2), c(3), d(4);
      std::vector<for_thread> aaa;   
-     aaa.push_back(a); aaa.push_back(b); aaa.push_back(c); aaa.push_back(d); 
-     printf("%-*s%-*s%-*s%-*s%-*s",25, "Потоки \\ элементы", 10, "1000", 10, "10000", 10, " 100000", 10, " 1000000");
+     aaa.emplace_back(a); aaa.emplace_back(b); 
+     aaa.emplace_back(c); aaa.emplace_back(d); 
+     printf("%-*s%-*s%-*s%-*s%-*s",25, "Потоки \\ элементы", 10, "1000", 10, "10 000", 10, " 100 000", 10, " 1 000 000");
     
      std::cout << std::endl << "1 поток";
     printf("%-*s", 12, "");
-    for (int i = 0; i < 4; i++) {
-        auto start = std::chrono::steady_clock::now();
-        aaa[i].summa(1, 1); 
-        auto end = std::chrono::steady_clock::now();
-        std::chrono::duration<double, std::milli> some = end - start;
-        printf("%-*s", 5, ""); 
-        std::cout << some.count();
+    for (int i = 0; i < 4; i++) { 
+        auto h1 = std::chrono::steady_clock::now();
+        aaa[i].summa(1, 1);  
+        auto h2 = std::chrono::steady_clock::now();
+        std::chrono::duration<double, std::milli> some = h2 - h1;
+        std::cout << some.count() << " ";
+        printf("%-*s", 5, "");       
     }
-    
-
-     std::vector<std::chrono::duration<double, std::milli>> some(4);
-     some.resize(4);
-
-     std::cout << std::endl << "2 потокa";
-     printf("%-*s", 12, "");
-     
-     std::thread t1(([&]() {
-         for (int i = 0; i < 4; i++) {
-             auto start = std::chrono::steady_clock::now();
-             aaa[i].summa(2, 1);
-             auto end = std::chrono::steady_clock::now();
-             some[i] = max(end - start, some[i]);          
-         }}));
-     std::thread t2(([&]() {
-         for (int i = 0; i < 4; i++) {
-             auto start = std::chrono::steady_clock::now();
-             aaa[i].summa(2, 2);
-             auto end = std::chrono::steady_clock::now();
-             some[i] = max(end - start, some[i]);           
-         }}));
-     for (int i = 0; i < 4; i++) {
-         printf("%-*s", 6, "");
-         std::cout << some[i].count();
-     }     
-    
-     t1.join();
-     t2.join();
- }
-
+    std::cout << std::endl << "2 потока"; 
+    size_t threads[]{ 1, 2, 4, 8, 16, 32 };
+    printf("%-*s", 12, "");
+std::vector<std::thread> t;
+    {
+        
+       std::vector<std::chrono::duration<double, std::milli>> some(4);
+        
+       for (int i = 0; i < 4; i++)
+       {
+           auto t0 = std::chrono::steady_clock::now();
+           t.emplace_back(std::thread(&for_thread::summa, a, 4, i));
+          
+           auto t1 = std::chrono::steady_clock::now();
+           some[i] = t1 - t0;
+           std::cout << "t10 = " << some[i].count()<<"  ";
+       }    
+    }
+       t[1].join();
+       t[2].join();
+       t[3].join();
+       t[0].join();    
+} 

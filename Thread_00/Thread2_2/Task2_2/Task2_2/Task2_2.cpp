@@ -5,46 +5,60 @@
 #include <sstream>
 #include <Windows.h>
 #include <mutex>
-int m0 = 0;
-std::mutex mu1;
+#include <vector>
+std::mutex m1, m2;
+std::vector<HANDLE>a01(10);
+std::vector<std::mutex> mm(10);
+std::atomic_int count=0, max_count=0;
+
+
+void head(int n) {
+   count++;
+    auto no = std::this_thread::get_id();
+    HANDLE a1 = GetStdHandle(STD_OUTPUT_HANDLE); 
+    std::lock_guard<std::mutex> lock(m1);
+    COORD a2 = { 1,n };      
+    SetConsoleCursorPosition(a1, a2);
+    std::cout << "number: " << n << " " << no ;
+   
+}
+
 void raschet(int n)
 {
-    auto no = std::this_thread::get_id;
-    HANDLE a1 = GetStdHandle(STD_OUTPUT_HANDLE);
-    COORD a2;
-    {
-        std::lock_guard<std::mutex> lock(mu1);
-        m0++;
-        a2.X = 1;
-        a2.Y = n;
-        SetConsoleCursorPosition(a1, a2);       
-        std::cout << "number: " << m0 << " " << no << std::endl;
-          }
+    using namespace std::chrono_literals;
+    head(n);
+    while (count < max_count) {  }  
         for (int i = 0; i < 10; i++)
-        {         
-            a2.X = i + 30;
-            a2.Y = n;
-            SetConsoleCursorPosition(a1, a2);
-            int t = 0;
-            std::cout << t;
-            using namespace std::chrono_literals;
+        {     int t = rand()%3;          
             while (t < 1000)
-            {               
+            {                  
                 t = t * (rand() % 10 + 1) + 1;
-                std::this_thread::sleep_for(200ms);
-            }
+                std::this_thread::sleep_for(200ms);               
+            }           
+            HANDLE a11 = GetStdHandle(STD_OUTPUT_HANDLE);            
+            {
+            std::lock_guard<std::mutex> lock(m2);
+            COORD a22 = { i + 30, n };
+            SetConsoleCursorPosition(a11, a22); }
+                std::cout << n;
         }
 }
 
 
 int main()
 {   
-    int n = 1, m=2;
-    std::thread t1(raschet, n);
-    std::cout << std::endl;
-    std::thread t2(raschet, m);
-    t1.join();
-    t2.join();
+    std::vector<std::thread> th;
+
+    int n = 5;
+
+    max_count = n;
+    for (int i = 1; i <= n; i++) {
+        th.emplace_back(std::thread(raschet, i));       
+    }   
+    for (int i = 0; i < n; i++)
+        th[i].join();
+   // for (int i = 5; i >0; i--)
+      //  raschet(i);
     HANDLE a1 = GetStdHandle(STD_OUTPUT_HANDLE);
     COORD a2;
     a2.X = 1;

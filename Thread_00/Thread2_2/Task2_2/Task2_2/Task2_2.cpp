@@ -10,37 +10,44 @@ std::mutex m1, m2;
 std::vector<HANDLE>a01(10);
 std::vector<std::mutex> mm(10);
 std::atomic_int count=0, max_count=0;
+HANDLE a1 = GetStdHandle(STD_OUTPUT_HANDLE);
 
+static void SetPosition(int x, int y)
+{
+    COORD point;
+    std::lock_guard<std::mutex> lock(m1);
+    point.X = x;
+    point.Y = y;
+    using namespace std::chrono_literals;
+    std::this_thread::sleep_for(2ms);
+    SetConsoleCursorPosition(a1, point);
+    std::cout<< y;
+}
 
 void head(int n) {
-   count++;
-    auto no = std::this_thread::get_id();
-    HANDLE a1 = GetStdHandle(STD_OUTPUT_HANDLE); 
-    std::lock_guard<std::mutex> lock(m1);
-    COORD a2 = { 1,n };      
+    using namespace std::chrono_literals;   
+    auto no = std::this_thread::get_id();  
+    std::lock_guard<std::mutex> lock(m2);
+    COORD a2 = { 1,n };   
+    std::this_thread::sleep_for(2ms);
     SetConsoleCursorPosition(a1, a2);
-    std::cout << "number: " << n << " " << no ;
-   
+    std::cout << "number: " << n << " id " << no;
+    std::this_thread::sleep_for(2ms);
+count++;
 }
 
 void raschet(int n)
 {
     using namespace std::chrono_literals;
     head(n);
-    while (count < max_count) {  }  
+    while (count < max_count) { std::this_thread::sleep_for(2ms); }
         for (int i = 0; i < 10; i++)
-        {     int t = rand()%3;          
-            while (t < 1000)
-            {                  
-                t = t * (rand() % 10 + 1) + 1;
-                std::this_thread::sleep_for(200ms);               
-            }           
-            HANDLE a11 = GetStdHandle(STD_OUTPUT_HANDLE);            
-            {
-            std::lock_guard<std::mutex> lock(m2);
-            COORD a22 = { i + 30, n };
-            SetConsoleCursorPosition(a11, a22); }
-                std::cout << n;
+        {
+            int ii = i + 30;
+        int time = rand() % 1000;
+        using namespace std::chrono_literals;
+        std::this_thread::sleep_for(1ms * time*n);      
+        SetPosition(ii, n);            
         }
 }
 
@@ -48,9 +55,7 @@ void raschet(int n)
 int main()
 {   
     std::vector<std::thread> th;
-
     int n = 5;
-
     max_count = n;
     for (int i = 1; i <= n; i++) {
         th.emplace_back(std::thread(raschet, i));       

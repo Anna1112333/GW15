@@ -1,7 +1,10 @@
-﻿#include <thread>
-#include <mutex>
+﻿//#define __cpp_lib_scoped_lock
 #include <iostream>
-using namespace std;
+#include <thread>
+#include <mutex>
+
+//#include <functional>
+//using namespace std;
 class Data
 {
 public:
@@ -30,24 +33,31 @@ void swap1(Data& n, Data& m) {
     std::string st;
     st = n.str;   n.str = m.str;   m.str = st;   
 }
-void swap2(Data& n, Data& m) {
-   //std::scoped_lock lock0(n.mt, m.mt);
+void swap2(Data& n, Data& m) { 
     std::unique_lock<std::mutex> lk1(n.mt, std::defer_lock);
    std::unique_lock<std::mutex> lk2(m.mt, std::defer_lock);
-   // std::lock(lk1, lk2);
-    int k;
+     int k;
     k = n.a;   n.a = m.a;   m.a = k;
     std::string st;
-    lock(lk1, lk2);
+    std::lock(lk1, lk2);
     st = n.str;   n.str = m.str;   m.str = st;
-   // m.mt.unlock();   n.mt.unlock();
+  
+}
+
+void swap3(Data& n, Data& m) {  
+   std::scoped_lock lk(n.mt, m.mt);  
+    int k;
+    k = n.a;   n.a = m.a;   m.a = k;
+    std::string st;   
+    st = n.str;   n.str = m.str;   m.str = st;  
 }
 
 int main()
 {
     Data n0(1, "an"), m0(2, "am");
     n0.get();
-    swap2(n0, m0);
+    swap3(n0, m0);
     n0.get();   
+   
 }
 

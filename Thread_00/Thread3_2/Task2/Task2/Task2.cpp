@@ -19,13 +19,17 @@ void find(It a, It b) {
                             //указатель на функцию
 void for_each( It a, It b, void(*find0)(It,It)) {
   auto s = distance(a, b);
+  if (s <= 3) {
+      find(a, b);
+      return;
+  }
   std::cout << "s=" << s << std::endl;;
     int v = s / 2;
-    if(v >3){
-    find0( a +  v, b);        
-    std::async(for_each, a + v, b, find);
-    find0(a, a + v - 1);
-    }
+   // if(v >3){
+   // find0( a +  v, b);        
+    std::async(for_each, a, a+v-1, find);
+    find0(a + v, b);
+   // }
 }
 
 #include <iostream>

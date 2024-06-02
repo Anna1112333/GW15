@@ -31,13 +31,14 @@
         it1 = it0 + 4;
         if(s>5)
        while(it1 < a.end()-5)
-        {        
-           find(it0, it1);         
+        {            
+          std::future ft=async( find, it0, it1);         
                 it1 += 5;
                 it0 += 5;
-                std::cout<<*Im << std::endl;           
+                std::cout<<*Im << std::endl;  
         }
-       find(it0, a.end());     
+        std::future ft = async(find, it0, a.end());
+      // find(it0, a.end());     
        std::cout << *Im << std::endl;
       //  std::cout << s << std::endl;
         std::swap(a[n], *Im);
@@ -48,8 +49,9 @@
 
     void sort_all(std::vector<int>& a0) {
         int s = a0.size();
-        for (int i = 0; i<s; i++)     
-        std::future<void> ft= async(sort, std::ref(a0), i);        
+        for (int i = 0; i < s; i++)
+            sort(a0, i);
+      //  std::future<void> ft= async(sort, std::ref(a0), i);        
     } 
 
 

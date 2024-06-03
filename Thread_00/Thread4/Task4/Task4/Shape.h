@@ -24,6 +24,22 @@ public:
 		x8 = 0, y8 = 0, z8 = 0;
 	double volume;
 	double square;
-	double height;
+	double radius; double height;
+};
+class line{};
+class sqr{};
+class cube{};
+class circle: public Shape {
+public:	
+	circle();
+	circle(int _x1, int _y1, double R); 
+	virtual double square();
+
 	double radius;
+};
+class cylinder: public circle {
+	cylinder(int _x1, int _y1, double R, double H) ;
+public:
+	double height;
+	double square() override;
 };

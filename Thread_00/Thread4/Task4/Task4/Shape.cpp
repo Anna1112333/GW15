@@ -114,3 +114,18 @@ Shape::Shape(int type, int _x1, int _y1, double R, double H)
 	}
 
 }
+circle::circle() {};
+circle::circle(int _x1, int _y1, double R) : radius{ R } {
+
+		x1 = _x1;
+		y1 = _y1;
+	}	
+  double circle:: square() {	return M_PI * radius * radius;}
+
+cylinder::cylinder(int _x1, int _y1, double R, double H) {
+		x1 = _x1;
+		y1 = _y1;
+		radius = R;
+		height + H;
+	}
+double cylinder::square() { return M_PI * radius * radius + 2 * radius * height;} 

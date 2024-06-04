@@ -1,7 +1,7 @@
 ﻿#include <iostream>
-//#include "Shape.h"
+#include "Shape.h"
 //#include "Transform.h"
 int main() {
-	//Shape a;
+	Shape a;
 	std::cout << "shape";
 }

@@ -3,7 +3,7 @@
 //#include<string>
 class Shape
 {
-public:	
+public:		
 	Shape();	
 	int a=0, b=0, c=0;
 	std::vector<int> x = { 0,0,0,0,0,0,0,0 };
@@ -13,6 +13,12 @@ public:
 	double square=0;
 	double radius=0; 
 	double height=0;
+	//Перенос класса Transform
+	void shift(int m, int n, int k);
+	void scaleX(int a);
+	void scaleY(int b);
+	void scaleZ(int c);
+	void scale(int s);
 };
 class line: public Shape {
 public:

@@ -56,3 +56,35 @@ circle::circle(int _x1, int _y1, double R) : radius{ R } {
   };
 double cylinder::square() { return M_PI * radius * radius + 2 * radius * height;} 
 
+
+
+
+//Пеоренос класса Transform
+void Shape::shift(int m, int n, int k)
+{
+	for (auto t : x) t += m;
+	for (auto t : y) t += n;
+	for (auto t : z) t += k;	
+}
+
+void Shape::scaleX(int a)
+{
+	for (auto t : x) t /= a;
+}
+
+void Shape::scaleY(int d)
+{
+	for (auto t : y) t /= d;
+}
+
+void Shape::scaleZ(int e)
+{
+	for (auto t : z) t /= e;	
+}
+
+void Shape::scale(int s)
+{
+	for (auto t : x) t /= s;
+	for (auto t : y) t /= s;
+	for (auto t : z) t /= s;
+}

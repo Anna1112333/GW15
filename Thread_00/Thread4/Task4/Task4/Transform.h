@@ -1,5 +1,5 @@
 #pragma once
-#include"shape.h"
+#include"Shape.h"
 class transform
 {
 public:
@@ -10,6 +10,6 @@ public:
 	Shape scaleZ(int e);
 	Shape scale(int s);
 
-private:
+//private:
 	Shape shape;
 };
